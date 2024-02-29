@@ -53,6 +53,7 @@
         <version.cassandra.unit>3.5.0.1</version.cassandra.unit>
         <version.rest-assured>4.3.3</version.rest-assured>
         <version.logback>1.2.10</version.logback>
+        <version.commons>3.12.0</version.commons>
     </properties>
 
     <dependencyManagement>
@@ -62,6 +63,11 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
                 <version>${version.jackson}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${version.commons}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>

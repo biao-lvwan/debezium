@@ -63,6 +63,7 @@ public abstract class RelationalChangeRecordEmitter<P extends Partition>
         }
     }
 
+    // 发送记录
     @Override
     protected void emitCreateRecord(Receiver<P> receiver, TableSchema tableSchema)
             throws InterruptedException {

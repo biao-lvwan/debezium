@@ -134,6 +134,7 @@ public class ChangeEventSourceCoordinator<P extends Partition, O extends OffsetC
         final O previousOffset = previousOffsets.getTheOnlyOffset();
 
         previousLogContext.set(taskContext.configureLoggingContext("snapshot", partition));
+        // 先做快照，在做stream
         SnapshotResult<O> snapshotResult = doSnapshot(snapshotSource, context, partition, previousOffset);
 
         if (running && snapshotResult.isCompletedOrSkipped()) {

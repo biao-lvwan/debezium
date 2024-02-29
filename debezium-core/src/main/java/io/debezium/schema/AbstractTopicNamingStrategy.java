@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.errors.ConnectException;
 import org.slf4j.Logger;
@@ -31,6 +32,9 @@ import io.debezium.util.Strings;
 @Incubating
 public abstract class AbstractTopicNamingStrategy<I extends DataCollectionId> implements TopicNamingStrategy<I> {
     public static final String DEFAULT_HEARTBEAT_TOPIC_PREFIX = "__debezium-heartbeat";
+
+    public static final String DEFAULT_HEARTBEAT_TOPIC_EXACT = "debezium.heartbeat";
+
     public static final String DEFAULT_TRANSACTION_TOPIC = "transaction";
 
     public static final Field TOPIC_DELIMITER = Field.create("topic.delimiter")
@@ -61,6 +65,16 @@ public abstract class AbstractTopicNamingStrategy<I extends DataCollectionId> im
             .withDescription("Specify the heartbeat topic name. Defaults to " +
                     DEFAULT_HEARTBEAT_TOPIC_PREFIX + ".${topic.prefix}");
 
+    public static final Field TOPIC_HEARTBEAT_EXACT = Field.create("topic.heartbeat.exact")
+            .withDisplayName("exact name of heartbeat topic")
+            .withType(ConfigDef.Type.STRING)
+            .withWidth(ConfigDef.Width.MEDIUM)
+            .withImportance(ConfigDef.Importance.LOW)
+            .withDefault(DEFAULT_HEARTBEAT_TOPIC_EXACT)
+            .withValidation(CommonConnectorConfig::validateTopicName)
+            .withDescription("Specify the heartbeat topic name. Defaults to " +
+                    DEFAULT_HEARTBEAT_TOPIC_EXACT + ".${topic.heartbeat.prefix}");
+
     public static final Field TOPIC_TRANSACTION = Field.create("topic.transaction")
             .withDisplayName("Transaction topic name")
             .withType(ConfigDef.Type.STRING)
@@ -78,6 +92,7 @@ public abstract class AbstractTopicNamingStrategy<I extends DataCollectionId> im
     protected String prefix;
     protected String transaction;
     protected String heartbeatPrefix;
+    protected String heartbeatExact;
 
     public AbstractTopicNamingStrategy(Properties props) {
         this.configure(props);
@@ -103,6 +118,7 @@ public abstract class AbstractTopicNamingStrategy<I extends DataCollectionId> im
                 BoundedConcurrentHashMap.Eviction.LRU);
         delimiter = config.getString(TOPIC_DELIMITER);
         heartbeatPrefix = config.getString(TOPIC_HEARTBEAT_PREFIX);
+        heartbeatExact = config.getString(TOPIC_HEARTBEAT_EXACT);
         transaction = config.getString(TOPIC_TRANSACTION);
         prefix = config.getString(CommonConnectorConfig.TOPIC_PREFIX);
         assert prefix != null;
@@ -118,7 +134,14 @@ public abstract class AbstractTopicNamingStrategy<I extends DataCollectionId> im
 
     @Override
     public String heartbeatTopic() {
-        return String.join(delimiter, heartbeatPrefix, prefix);
+        String topicName = DEFAULT_HEARTBEAT_TOPIC_EXACT;
+        if (StringUtils.isEmpty(heartbeatExact)) {
+            topicName = String.join(delimiter, heartbeatPrefix, prefix);
+        }
+        else {
+            topicName = heartbeatExact;
+        }
+        return topicName;
     }
 
     @Override

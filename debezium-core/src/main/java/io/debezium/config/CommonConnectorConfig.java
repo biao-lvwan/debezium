@@ -54,6 +54,7 @@ import io.debezium.util.Strings;
  */
 public abstract class CommonConnectorConfig {
     public static final String TASK_ID = "task.id";
+    public static final String SOURCE_NAME = "name";
     public static final Pattern TOPIC_NAME_PATTERN = Pattern.compile("^[a-zA-Z0-9_.\\-]+$");
     public static final String MULTI_PARTITION_MODE = "multi.partition.mode";
 
@@ -615,6 +616,7 @@ public abstract class CommonConnectorConfig {
     private final String signalingDataCollection;
     private final EnumSet<Operation> skippedOperations;
     private final String taskId;
+    private final String sourceName;
 
     protected CommonConnectorConfig(Configuration config, int defaultSnapshotFetchSize) {
         this.config = config;
@@ -643,6 +645,7 @@ public abstract class CommonConnectorConfig {
         this.signalingDataCollection = config.getString(SIGNAL_DATA_COLLECTION);
         this.skippedOperations = determineSkippedOperations(config);
         this.taskId = config.getString(TASK_ID);
+        this.sourceName = config.getString(SOURCE_NAME);
     }
 
     private static EnumSet<Envelope.Operation> determineSkippedOperations(Configuration config) {
@@ -694,6 +697,10 @@ public abstract class CommonConnectorConfig {
 
     public String getLogicalName() {
         return logicalName;
+    }
+
+    public String getSourceName() {
+        return sourceName;
     }
 
     public abstract String getContextName();

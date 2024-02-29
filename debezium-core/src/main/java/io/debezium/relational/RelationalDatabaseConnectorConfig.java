@@ -39,7 +39,6 @@ import io.debezium.relational.Tables.ColumnNameFilterFactory;
 import io.debezium.relational.Tables.TableFilter;
 import io.debezium.spi.topic.TopicNamingStrategy;
 import io.debezium.util.SchemaNameAdjuster;
-import io.debezium.util.Strings;
 
 /**
  * Configuration options shared across the relational CDC connectors.
@@ -675,7 +674,7 @@ public abstract class RelationalDatabaseConnectorConfig extends CommonConnectorC
     @Override
     public Heartbeat createHeartbeat(TopicNamingStrategy topicNamingStrategy, SchemaNameAdjuster schemaNameAdjuster,
                                      HeartbeatConnectionProvider connectionProvider, HeartbeatErrorHandler errorHandler) {
-        if (!Strings.isNullOrBlank(getHeartbeatActionQuery()) && !getHeartbeatInterval().isZero()) {
+        if (!getHeartbeatInterval().isZero()) {
             return new DatabaseHeartbeatImpl(
                     getHeartbeatInterval(),
                     topicNamingStrategy.heartbeatTopic(),

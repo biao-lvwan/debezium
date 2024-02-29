@@ -24,9 +24,11 @@ import io.debezium.util.Threads;
 import io.debezium.util.Threads.Timer;
 
 /**
- * Default implementation of Heartbeat
- *
- */
+* @program: HeartbeatImpl
+* @description: Heartbeat 处理公用类
+* @author: biao.xu
+* @create: 2024/2/29
+**/
 public class HeartbeatImpl implements Heartbeat {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HeartbeatImpl.class);
@@ -89,6 +91,7 @@ public class HeartbeatImpl implements Heartbeat {
             // Do not send heartbeat message if no offset is available yet
             return;
         }
+        // 将心跳record插入队列进行发送
         consumer.accept(heartbeatRecord(partition, offset));
     }
 
@@ -119,7 +122,7 @@ public class HeartbeatImpl implements Heartbeat {
 
     /**
      * Produce an empty record to the heartbeat topic.
-     *
+     * TODO: 是否需要自定义查询
      */
     private SourceRecord heartbeatRecord(Map<String, ?> sourcePartition, Map<String, ?> sourceOffset) {
         final Integer partition = 0;

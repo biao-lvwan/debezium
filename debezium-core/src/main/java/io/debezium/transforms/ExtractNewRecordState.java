@@ -125,6 +125,7 @@ public class ExtractNewRecordState<R extends ConnectRecord<R>> implements Transf
 
     @Override
     public R apply(final R record) {
+        LOGGER.info("return record {},dropTombstones:{}", record == null ? "" : record.toString(), dropTombstones);
         if (record.value() == null) {
             if (dropTombstones) {
                 LOGGER.trace("Tombstone {} arrived and requested to be dropped", record.key());

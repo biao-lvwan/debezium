@@ -247,7 +247,7 @@ public class EventDispatcher<P extends Partition, T extends DataCollectionId> im
                 });
                 handled = true;
             }
-
+            // 心跳处理
             heartbeat.heartbeat(
                     changeRecordEmitter.getPartition().getSourcePartition(),
                     changeRecordEmitter.getOffset().getOffset(),

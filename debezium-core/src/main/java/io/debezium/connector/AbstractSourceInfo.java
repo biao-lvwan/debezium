@@ -29,6 +29,7 @@ public abstract class AbstractSourceInfo {
     public static final String TABLE_NAME_KEY = "table";
     public static final String COLLECTION_NAME_KEY = "collection";
     public static final String SEQUENCE_KEY = "sequence";
+    public static final String SOURCE_NAME_KEY = "source_name";
 
     private final CommonConnectorConfig config;
 
@@ -68,6 +69,10 @@ public abstract class AbstractSourceInfo {
      */
     protected String serverName() {
         return config.getLogicalName();
+    }
+
+    public String sourceName() {
+        return config.getSourceName();
     }
 
     /**
