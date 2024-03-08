@@ -635,6 +635,8 @@ public class MySqlStreamingChangeEventSource implements StreamingChangeEventSour
      * @param event the update event; never null
      */
     protected void handleUpdateTableMetadata(MySqlPartition partition, MySqlOffsetContext offsetContext, Event event) throws InterruptedException {
+        //每一次都会调用，此处可以根据是否包含事务表和事务ID，来判断是否为外部表
+        String gtid = offsetContext.gtidSet();
         TableMapEventData metadata = unwrapData(event);
         long tableNumber = metadata.getTableId();
         String databaseName = metadata.getDatabase();
